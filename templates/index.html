@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Scraper and PDF Reader with GroqCloud</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        h1 {
+            text-align: center;
+            margin: 0;
+            padding: 10px; /* Smaller padding for the heading */
+            flex: 0 0 10%; /* Takes up 10% of the height */
+            background-color: #1e1e1e; /* Background for header */
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .container {
+            display: flex;
+            flex: 1; /* Takes up the remaining height */
+        }
+
+        .panel {
+            width: 50%;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+        }
+
+        .left-panel {
+            background-color: #1e1e1e;
+            margin-right: 10px; /* Space between panels */
+        }
+
+        .right-panel {
+            background-color: #1e1e1e;
+        }
+
+        label {
+            margin-top: 10px;
+            display: block;
+            font-weight: bold;
+        }
+
+        input[type="text"], input[type="file"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            border: 1px solid #333;
+            border-radius: 5px;
+            background-color: #333;
+            color: #ffffff;
+            margin-top: 5px;
+        }
+
+        button {
+            background-color: #4caf50; /* Green button */
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #388e3c; /* Darker green on hover */
+        }
+
+        #result {
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            white-space: pre-wrap; /* Keep whitespace in the answer */
+            height: calc(100% - 60px); /* Adjust height to fit */
+            overflow-y: auto; /* Enable scroll if content is too long */
+         }
+
+         /* Responsive design */
+         @media (max-width: 800px) {
+             .panel {
+                 width: 100%; /* Stack panels on smaller screens */
+                 margin-right: 0; /* Remove right margin */
+             }
+         }
+     </style>
+</head>
+<body>
+    <h1>RAG system</h1>
+
+    <div class="container">
+        
+       <!-- Web Scraping Panel -->
+       <div class="panel left-panel">
+           <h2>Web Scraping</h2>
+           <form id="scrapeForm">
+               <label for="url">Enter URL:</label>
+               <input type="text" id="url" name="url" required>
+
+               <label for="question">Enter your question:</label>
+               <input type="text" id="question" name="question" required>
+
+               <button type="submit">Scrape and Ask</button>
+               <div id="scrapeResult" style="margin-top:15px;"></div> <!-- Result container for scraping -->
+           </form>
+       </div>
+
+       <!-- PDF Upload Panel -->
+       <div class="panel right-panel">
+           <h2>PDF Upload</h2>
+           <form id="uploadForm" enctype="multipart/form-data">
+               <label for="file">Select PDF file:</label>
+               <input type="file" id="file" name="file" accept=".pdf" required>
+
+               <label for="pdfQuestion">Enter your question:</label>
+               <input type="text" id="pdfQuestion" name="question" required>
+
+               <button type="submit">Upload and Ask</button>
+               <div id="pdfResult" style="margin-top:15px;"></div> <!-- Result container for PDF upload -->
+           </form>
+       </div>
+
+   </div>
+
+   <script>
+       // Handle scraping form submission
+       document.getElementById('scrapeForm').onsubmit = async function(event) {
+           event.preventDefault();
+           const url = document.getElementById('url').value.trim();
+           const question = document.getElementById('question').value.trim();
+
+           const response = await fetch('/scrape', {
+               method: 'POST',
+               headers: {
+                   'Content-Type': 'application/json'
+               },
+               body: JSON.stringify({ url, question })
+           });
+
+           const data = await response.json();
+           document.getElementById('scrapeResult').innerText = `URL:${data.url}\nAnswer:${data.answer || data.error}`;
+       };
+
+       // Handle PDF upload form submission
+       document.getElementById('uploadForm').onsubmit = async function(event) {
+           event.preventDefault();
+           
+           // Create FormData object to handle file upload
+           const formData = new FormData();
+           formData.append('file', document.getElementById('file').files[0]);
+           formData.append('question', document.getElementById('pdfQuestion').value.trim());
+
+           // Send a POST request to upload PDF and ask
+           const response = await fetch('/upload', {
+               method: 'POST',
+               body: formData
+           });
+
+           const data = await response.json();
+           document.getElementById('pdfResult').innerText = `File Name:${data.file_name}\nAnswer:${data.answer || data.error}`;
+       };
+   </script>
+</body>
+</html>
