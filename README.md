@@ -81,3 +81,4 @@ The design is responsive, meaning it adjusts well to different screen sizes.
 ---
 
 By following this documentation, users can set up their own instance of this system on Replit, connect to GroqCloud's Llama-3 model, and interact with either PDF or scraped web content using natural language queries.
+<img width="1418" alt="Screenshot 2024-10-19 at 1 14 08 AM" src="https://github.com/user-attachments/assets/0f77f9e8-5122-45b0-8608-719b2c424920">
