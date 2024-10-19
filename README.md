@@ -1,3 +1,14 @@
+### Problem Statement:
+Users often struggle with efficiently retrieving relevant information from web pages and PDF documents due to the manual effort required to search through large amounts of content. This application aims to solve this issue by allowing users to input a URL or upload a PDF file, extract the text, and ask questions about the content. The application leverages GroqCloud's Llama-3 model to provide accurate and contextually relevant answers, enhancing the speed and convenience of information retrieval from these common sources.
+
+
+### Key features include:
+Web scraping for text extraction.
+PDF content parsing.
+Query handling via GroqCloud API.
+A responsive HTML interface with error handling.
+Requirements include Flask, requests, lxml, PyPDF2, and a GroqCloud API key for integration.
+
 ### Summary:
 This code defines a Flask web application that provides two main functionalities: 
 
